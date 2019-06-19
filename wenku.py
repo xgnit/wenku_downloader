@@ -1,6 +1,7 @@
 
 import tkinter as tk
 from backend import fetch
+from tkinter import messagebox
 
 window = tk.Tk()
 
@@ -22,8 +23,20 @@ choose_var.set('word') # set the default option
 tk.Label(window, text='选择文件类型', font=('Arial', 12)).grid(row=2, column=0, pady=20)
 popupMenu = tk.OptionMenu(window, choose_var, *choices).grid(row=2, column=1, pady=20)
 
+def handle_msg(msg):
+    messagebox.showinfo("Title", msg)
+
+
+def handle_error(msg):
+    messagebox.showerror("Error", msg)
+
+
 def download():
-    fetch(link.get(), choose_var.get())
+    res, msg = fetch(link.get(), choose_var.get())
+    if res:
+        handle_msg(msg)
+    else:
+        handle_error(msg)
 
 
 tk.Button(window, text='下载', command=download).grid(row=3, pady=20)
