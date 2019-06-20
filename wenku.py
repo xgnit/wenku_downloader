@@ -31,8 +31,13 @@ def handle_error(msg):
     messagebox.showerror("Error", msg)
 
 
-def download():
-    res, msg = fetch(link.get(), choose_var.get())
+def download(root=window):
+    tl = tk.Toplevel(root)
+    svar = tk.StringVar()
+    svar.set('准备开始下载')
+    tk.Label(tl, textvariable=svar, font=('Arial', 12)).pack()
+
+    res, msg = fetch(link.get(), choose_var.get(), svar, root)
     if res:
         handle_msg(msg)
     else:
