@@ -6,4 +6,6 @@
 
 ![image](https://github.com/T1n9/wenku_downloader/raw/master/capture.PNG)
 
+todo: 创建exe
+
 
