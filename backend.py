@@ -13,11 +13,16 @@ def get_doc_id(url):
         raise RuntimeError('无法获取Doc id， url格式错误？')
 
 
+def update_progresss_win(str, svar, root):
+    svar.set(str)
+    root.update()
+
 
 y = 0
-def DOC(url):
+def DOC(url, svar, root):
 
     doc_id = get_doc_id(url)
+    update_progresss_win('获取页面数据...', svar, root)
     try:
         html = requests.get(url).text
     except Exception as e:
@@ -25,13 +30,25 @@ def DOC(url):
     lists=re.findall('(https.*?0.json.*?)\\\\x22}',html)
     lenth = (len(lists)//2)
     NewLists = lists[:lenth]
-    for i in range(len(NewLists)) :
+
+    update_progresss_win('分析数据，准备开始下载...', svar, root)
+
+    filename = ''
+    for i in range(len(NewLists)):
+
+        base = i*100/len(NewLists)
+        percentage = 100/len(NewLists)
+
         NewLists[i] = NewLists[i].replace('\\','')
         txts=requests.get(NewLists[i]).text
         txtlists = re.findall('"c":"(.*?)".*?"y":(.*?),',txts)
         for i in range(0,len(txtlists)):
+
+            tip = int(i*percentage/len(txtlists))
+            update_progresss_win('已完成 {}%'.format(int(base+tip)), svar, root)
+
             global y
-            print(txtlists[i][0].encode('utf-8').decode('unicode_escape','ignore'))
+            # print(txtlists[i][0].encode('utf-8').decode('unicode_escape','ignore'))
             if y != txtlists[i][1]:
                 y = txtlists[i][1]
                 n = '\n'
@@ -41,14 +58,16 @@ def DOC(url):
             with open(filename,'a',encoding='utf-8') as f:
                 f.write(n+txtlists[i][0].encode('utf-8').decode('unicode_escape','ignore').replace('\\',''))
         # print("文档保存在"+filename)
-        return True, '文档保存在{}'.format(filename)
+    return True, '文档保存在{}'.format(filename)
 
 
 
-def PPT(url):
+def PPT(url, svar, root):
 
     doc_id = get_doc_id(url)
     url = "https://wenku.baidu.com/browse/getbcsurl?doc_id="+doc_id+"&pn=1&rn=99999&type=ppt"
+    update_progresss_win('获取页面数据...', svar, root)
+
     try:
         html = requests.get(url).text
     except Exception as e:
@@ -61,16 +80,20 @@ def PPT(url):
     except:
         pass
     for i in range(0,len(lists)):
+        update_progresss_win('已完成 {}%'.format(int(i/len(lists))), svar, root)
+
         img=requests.get(lists[i]).content
         with open(doc_id+'\img'+str(i)+'.jpg','wb') as m:
             m.write(img)
     # print("PPT图片保存在" + doc_id +"文件夹")
-    return True, '文档保存在{}'.format(filename)
+    return True, '文档保存在{}'.format(doc_id)
 
 
-def TXT(url):
+def TXT(url, svar, root):
     doc_id = get_doc_id(url)
     url = "https://wenku.baidu.com/api/doc/getdocinfo?callback=cb&doc_id="+doc_id
+    update_progresss_win('获取页面数据...', svar, root)
+
     try:
         html = requests.get(url).text
     except Exception as e:
@@ -95,9 +118,11 @@ def TXT(url):
     return True, '文档保存在{}'.format(filename)
 
 
-def PDF(url):
+def PDF(url, svar, root):
     doc_id = get_doc_id(url)
     url = "https://wenku.baidu.com/browse/getbcsurl?doc_id="+doc_id+"&pn=1&rn=99999&type=ppt"
+    update_progresss_win('获取页面数据...', svar, root)
+
     try:
         html = requests.get(url).text
     except Exception as e:
@@ -111,11 +136,14 @@ def PDF(url):
     except:
         pass
     for i in range(0,len(lists)):
+
+        update_progresss_win('已完成 {}%'.format(int(i/len(lists))), svar, root)
+
         img=requests.get(lists[i]).content
         with open(doc_id+'\img'+str(i)+'.jpg','wb') as m:
             m.write(img)
     # print("FPD图片保存在" + doc_id + "文件夹")
-    return True, '文档保存在{}'.format(filename)
+    return True, '文档保存在{}'.format(doc_id)
 
 
 fetch_dict = {
@@ -126,8 +154,8 @@ fetch_dict = {
 }
 
 
-def fetch(link, type):
+def fetch(link, doc_type, svar, root):
     try:
-        return fetch_dict[type](link)
+        return fetch_dict[doc_type](link, svar, root)
     except Exception as e:
         return False, str(e)
