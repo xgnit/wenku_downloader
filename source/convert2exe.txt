@@ -1,0 +1,1 @@
+pyinstaller -F -w -i fav.ico wenku.py
