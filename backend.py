@@ -80,7 +80,7 @@ def PPT(url, svar, root):
     except:
         pass
     for i in range(0,len(lists)):
-        update_progresss_win('已完成 {}%'.format(int(i/len(lists))), svar, root)
+        update_progresss_win('已完成 {}%'.format(int(i*100/len(lists))), svar, root)
 
         img=requests.get(lists[i]).content
         with open(doc_id+'\img'+str(i)+'.jpg','wb') as m:
@@ -137,7 +137,7 @@ def PDF(url, svar, root):
         pass
     for i in range(0,len(lists)):
 
-        update_progresss_win('已完成 {}%'.format(int(i/len(lists))), svar, root)
+        update_progresss_win('已完成 {}%'.format(int(i*100/len(lists))), svar, root)
 
         img=requests.get(lists[i]).content
         with open(doc_id+'\img'+str(i)+'.jpg','wb') as m:

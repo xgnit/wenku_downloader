@@ -42,6 +42,7 @@ def download(root=window):
         handle_msg(msg)
     else:
         handle_error(msg)
+    tl.destroy()
 
 
 tk.Button(window, text='下载', command=download).grid(row=3, pady=20)
