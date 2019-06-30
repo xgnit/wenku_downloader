@@ -6,6 +6,3 @@
 
 
 ![image](https://github.com/T1n9/wenku_downloader/raw/master/source/capture.PNG)
-
-
-todo: fix pdf download
